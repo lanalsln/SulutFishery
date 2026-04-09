@@ -1,0 +1,8 @@
+[31-Mar-2026 18:17:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function escapeHTML() in C:\xampp\htdocs\SulutFishery\dashboard.php:33
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\SulutFishery\dashboard.php on line 33
+[31-Mar-2026 18:17:50 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined function escapeHTML() in C:\xampp\htdocs\SulutFishery\dashboard.php:33
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\SulutFishery\dashboard.php on line 33

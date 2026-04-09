@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sulut Fishery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ocean-deep: #0a1628;
+        --ocean-mid: #0d2647;
+        --teal: #0f7b6c;
+        --teal-light: #14a896;
+        --gold: #e8c56d;
+        --gold-light: #f5d98a;
+        --sand: #f5ede0;
+        --white: #fdfcfa;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--ocean-deep);
+        color: var(--white);
+        overflow-x: hidden;
+      }
+
+      /* Noise texture overlay */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1.2rem 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 22, 40, 0.85),
+          transparent
+        );
+        backdrop-filter: blur(0px);
+        transition: all 0.4s ease;
+      }
+      nav.scrolled {
+        background: rgba(10, 22, 40, 0.92);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(232, 197, 109, 0.12);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+      }
+      .nav-logo img {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1.5px solid var(--gold);
+      }
+      .logo-placeholder {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--teal), var(--ocean-mid));
+        border: 1.5px solid var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--gold);
+      }
+      .nav-brand {
+        font-family: "Playfair Display", serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--white);
+        letter-spacing: 0.03em;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .nav-links a {
+        text-decoration: none;
+        font-size: 0.88rem;
+        font-weight: 400;
+        color: rgba(253, 252, 250, 0.75);
+        letter-spacing: 0.05em;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--gold);
+      }
+      .btn-login {
+        padding: 0.5rem 1.4rem;
+        border-radius: 2rem;
+        border: 1px solid rgba(232, 197, 109, 0.5);
+        color: var(--gold);
+        font-size: 0.88rem;
+        letter-spacing: 0.05em;
+        transition: all 0.25s;
+        text-decoration: none;
+        background: transparent;
+      }
+      .btn-login:hover {
+        background: rgba(232, 197, 109, 0.12);
+        border-color: var(--gold);
+        color: var(--gold-light);
+      }
+      .btn-register {
+        padding: 0.5rem 1.4rem;
+        border-radius: 2rem;
+        background: var(--gold);
+        color: var(--ocean-deep);
+        font-size: 0.88rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        transition: all 0.25s;
+        text-decoration: none;
+        border: 1px solid var(--gold);
+      }
+      .btn-register:hover {
+        background: var(--gold-light);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(232, 197, 109, 0.3);
+      }
+
+      /* HERO */
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 50% 120%,
+            rgba(15, 123, 108, 0.35) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 80% 20%,
+            rgba(13, 38, 71, 0.8) 0%,
+            transparent 50%
+          ),
+          linear-gradient(
+            175deg,
+            var(--ocean-deep) 0%,
+            #061220 50%,
+            #081a12 100%
+          );
+      }
+      .wave-svg {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+      }
+      .fish-deco {
+        position: absolute;
+        font-size: 8rem;
+        opacity: 0.04;
+        animation: floatfish 8s ease-in-out infinite;
+        user-select: none;
+        z-index: 1;
+      }
+      .fish-1 {
+        top: 15%;
+        left: 8%;
+        animation-delay: 0s;
+      }
+      .fish-2 {
+        top: 60%;
+        right: 10%;
+        font-size: 5rem;
+        animation-delay: 3s;
+      }
+      .fish-3 {
+        bottom: 20%;
+        left: 20%;
+        font-size: 3rem;
+        animation-delay: 1.5s;
+      }
+      @keyframes floatfish {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-3deg);
+        }
+        50% {
+          transform: translateY(-18px) rotate(3deg);
+        }
+      }
+      .hero-content {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        padding: 2rem;
+        max-width: 800px;
+        animation: fadeUp 1.2s ease forwards;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .hero-eyebrow {
+        display: inline-block;
+        font-size: 0.78rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--teal-light);
+        border: 1px solid rgba(20, 168, 150, 0.35);
+        padding: 0.35rem 1.2rem;
+        border-radius: 2rem;
+        margin-bottom: 1.8rem;
+      }
+      .hero-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 900;
+        line-height: 1.05;
+        color: var(--white);
+        text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+      }
+      .hero-title span {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .hero-sub {
+        margin-top: 1.4rem;
+        font-size: 1.1rem;
+        font-weight: 300;
+        color: rgba(253, 252, 250, 0.65);
+        line-height: 1.7;
+        max-width: 540px;
+        margin-inline: auto;
+      }
+      .hero-cta {
+        margin-top: 2.5rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-join {
+        padding: 0.9rem 2.5rem;
+        border-radius: 3rem;
+        background: linear-gradient(135deg, var(--teal), var(--teal-light));
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 8px 30px rgba(15, 123, 108, 0.4);
+        border: none;
+        cursor: pointer;
+      }
+      .btn-join:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(15, 123, 108, 0.55);
+      }
+      .scroll-hint {
+        position: absolute;
+        bottom: 5.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(253, 252, 250, 0.3);
+        animation: bounce 2s ease-in-out infinite;
+      }
+      .scroll-line {
+        width: 1px;
+        height: 40px;
+        background: linear-gradient(
+          to bottom,
+          rgba(232, 197, 109, 0.4),
+          transparent
+        );
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-50%) translateY(6px);
+        }
+      }
+
+      /* ABOUT SECTION */
+      .about-section {
+        position: relative;
+        padding: 8rem 2rem;
+        background: linear-gradient(180deg, #081a12 0%, var(--ocean-deep) 100%);
+      }
+      .about-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+      }
+      .about-img-wrap {
+        position: relative;
+      }
+      .about-img-frame {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        aspect-ratio: 4/5;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      }
+      .about-img-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .about-img-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--ocean-mid), var(--teal));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 6rem;
+        filter: brightness(0.7);
+      }
+      .about-img-accent {
+        position: absolute;
+        bottom: -1.5rem;
+        right: -1.5rem;
+        width: 55%;
+        aspect-ratio: 1;
+        border: 2px solid rgba(232, 197, 109, 0.3);
+        border-radius: 4px;
+        z-index: -1;
+      }
+      .about-tag {
+        position: absolute;
+        top: 1.5rem;
+        left: -2rem;
+        background: var(--gold);
+        color: var(--ocean-deep);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.5rem 1.2rem;
+        border-radius: 2rem;
+        white-space: nowrap;
+        box-shadow: 0 8px 25px rgba(232, 197, 109, 0.35);
+      }
+      .about-text .section-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--teal-light);
+        margin-bottom: 1rem;
+      }
+      .about-text h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: 800;
+        line-height: 1.2;
+        color: var(--white);
+        margin-bottom: 1.5rem;
+      }
+      .about-text h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .about-text p {
+        font-size: 0.97rem;
+        line-height: 1.85;
+        color: rgba(253, 252, 250, 0.6);
+        margin-bottom: 1.2rem;
+      }
+      .about-features {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .feature-icon {
+        flex-shrink: 0;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: rgba(15, 123, 108, 0.2);
+        border: 1px solid rgba(15, 123, 108, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+      .feature-text h4 {
+        font-size: 0.93rem;
+        font-weight: 500;
+        color: var(--white);
+        margin-bottom: 0.25rem;
+      }
+      .feature-text p {
+        font-size: 0.85rem;
+        color: rgba(253, 252, 250, 0.5);
+        line-height: 1.6;
+      }
+
+      /* STATS SECTION */
+      .stats-section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .stats-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(13, 38, 71, 0.97) 0%,
+          rgba(10, 22, 40, 0.99) 50%,
+          rgba(5, 25, 18, 0.97) 100%
+        );
+      }
+      .stats-pattern {
+        position: absolute;
+        inset: 0;
+        opacity: 0.04;
+        background-image:
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 60px,
+            rgba(232, 197, 109, 0.5) 60px,
+            rgba(232, 197, 109, 0.5) 61px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 60px,
+            rgba(232, 197, 109, 0.5) 60px,
+            rgba(232, 197, 109, 0.5) 61px
+          );
+      }
+      .stats-container {
+        position: relative;
+        z-index: 2;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 6rem 2rem;
+        text-align: center;
+      }
+      .stats-header {
+        margin-bottom: 5rem;
+      }
+      .stats-header .section-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--teal-light);
+        margin-bottom: 1rem;
+      }
+      .stats-header h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        color: var(--white);
+      }
+      .stats-header h2 span {
+        color: var(--gold);
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+      .stat-card {
+        position: relative;
+        padding: 3rem 2rem;
+        border-radius: 16px;
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.01)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+        transition:
+          transform 0.3s,
+          border-color 0.3s;
+      }
+      .stat-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(232, 197, 109, 0.25);
+      }
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .stat-card:hover::before {
+        opacity: 1;
+      }
+      .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1.2rem;
+      }
+      .stat-number {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2.8rem, 5vw, 4.5rem);
+        font-weight: 900;
+        color: var(--gold);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+      .stat-label {
+        font-size: 0.9rem;
+        color: rgba(253, 252, 250, 0.55);
+        font-weight: 300;
+        letter-spacing: 0.05em;
+      }
+      .stat-sublabel {
+        font-size: 0.75rem;
+        color: rgba(253, 252, 250, 0.3);
+        margin-top: 0.3rem;
+      }
+
+      /* GALLERY */
+      .gallery-section {
+        padding: 7rem 0;
+        background: var(--ocean-deep);
+        overflow: hidden;
+      }
+      .gallery-header {
+        text-align: center;
+        padding: 0 2rem;
+        margin-bottom: 3.5rem;
+      }
+      .gallery-header .section-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--teal-light);
+        margin-bottom: 1rem;
+      }
+      .gallery-header h2 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        color: var(--white);
+      }
+      .slideshow-wrapper {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .slideshow {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        aspect-ratio: 16/9;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s ease;
+        opacity: 0;
+        transform: scale(1.03);
+      }
+      .slide.active {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .slide-bg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .slide-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+      }
+      .slide-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(10, 22, 40, 0.8) 0%,
+          transparent 50%
+        );
+      }
+      .slide-caption {
+        position: absolute;
+        bottom: 2rem;
+        left: 2rem;
+        right: 2rem;
+      }
+      .slide-caption h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.3rem;
+      }
+      .slide-caption p {
+        font-size: 0.88rem;
+        color: rgba(255, 255, 255, 0.65);
+      }
+      .slide-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.8rem;
+      }
+      .slide-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .slide-btn:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ocean-deep);
+      }
+      .slide-dots {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.25);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .dot.active {
+        background: var(--gold);
+        width: 22px;
+        border-radius: 4px;
+      }
+
+      /* FOOTER */
+      footer {
+        position: relative;
+        padding: 3.5rem 2rem;
+        background: rgba(5, 12, 22, 0.95);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        text-align: center;
+      }
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.2rem;
+      }
+      .footer-brand {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--gold);
+      }
+      .footer-tagline {
+        font-size: 0.82rem;
+        color: rgba(253, 252, 250, 0.35);
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.05em;
+      }
+      .footer-divider {
+        width: 60px;
+        height: 1px;
+        background: rgba(232, 197, 109, 0.2);
+        margin: 1.2rem auto;
+      }
+      .footer-credit {
+        font-size: 0.78rem;
+        color: rgba(253, 252, 250, 0.25);
+        line-height: 1.8;
+      }
+      .footer-credit span {
+        color: var(--teal-light);
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .about-container {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+        .about-tag {
+          left: 0;
+          top: -1.5rem;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        .nav-links .btn-login {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav id="navbar">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-placeholder">SF</div>
+        <span class="nav-brand">Sulut Fishery</span>
+      </a>
+      <div class="nav-links">
+        <a href="login.php" class="btn-login">Masuk</a>
+        <a href="login.php?mode=register" class="btn-register">Daftar</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="fish-deco fish-1">🐟</div>
+      <div class="fish-deco fish-2">🐠</div>
+      <div class="fish-deco fish-3">🦐</div>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          Sulawesi Utara · Platform Perikanan Digital
+        </div>
+        <h1 class="hero-title">Welcome to<br /><span>Sulut Fishery</span></h1>
+        <p class="hero-sub">
+          Platform lelang ikan digital pertama di Sulawesi Utara. Menghubungkan
+          nelayan, pembeli, dan pasar ekspor dalam satu ekosistem yang
+          transparan.
+        </p>
+        <div class="hero-cta">
+          <a href="login.php?mode=register" class="btn-join"
+            >Bergabung Sekarang →</a
+          >
+        </div>
+      </div>
+
+      <div class="scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Gulir</span>
+      </div>
+
+      <svg
+        class="wave-svg"
+        viewBox="0 0 1440 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
+          fill="#081a12"
+        />
+      </svg>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section">
+      <div class="about-container">
+        <div class="about-img-wrap">
+          <div class="about-img-frame">
+            <div
+              class="about-img-placeholder"
+              style="
+                background: linear-gradient(135deg, #0d2647 0%, #0f7b6c 100%);
+              "
+            >
+              🎣
+            </div>
+          </div>
+          <div class="about-img-accent"></div>
+          <div class="about-tag">Sejak 2024</div>
+        </div>
+        <div class="about-text">
+          <p class="section-label">Tentang Kami</p>
+          <h2>Platform Lelang Ikan <em>Terpercaya</em> di Sulawesi Utara</h2>
+          <p>
+            Sulut Fishery hadir sebagai solusi digital untuk industri perikanan
+            Sulawesi Utara. Kami menyediakan platform lelang yang transparan,
+            efisien, dan dapat diakses oleh semua pihak — dari nelayan lokal
+            hingga eksportir internasional.
+          </p>
+          <p>
+            Dengan teknologi modern, kami memastikan setiap tangkapan ikan
+            mendapatkan harga terbaik melalui sistem lelang yang adil dan
+            real-time.
+          </p>
+          <div class="about-features">
+            <div class="feature-item">
+              <div class="feature-icon">⚡</div>
+              <div class="feature-text">
+                <h4>Lelang Real-Time</h4>
+                <p>Penawaran langsung dan transparan tanpa perantara</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔒</div>
+              <div class="feature-text">
+                <h4>Transaksi Aman</h4>
+                <p>Sistem verifikasi berlapis untuk setiap transaksi</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🌐</div>
+              <div class="feature-text">
+                <h4>Jangkauan Ekspor</h4>
+                <p>Akses ke pasar internasional secara langsung</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+      <div class="stats-bg"></div>
+      <div class="stats-pattern"></div>
+      <div class="stats-container">
+        <div class="stats-header">
+          <p class="section-label">Dalam Angka</p>
+          <h2>Pencapaian <span>Kami</span></h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-number" id="cnt-users">0</div>
+            <div class="stat-label">Pengguna Terdaftar</div>
+            <div class="stat-sublabel">Nelayan & Pembeli Aktif</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🐟</div>
+            <div class="stat-number" id="cnt-catch">0</div>
+            <div class="stat-label">Total Tangkapan</div>
+            <div class="stat-sublabel">Ton ikan ter-lelang</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✈️</div>
+            <div class="stat-number" id="cnt-export">0</div>
+            <div class="stat-label">Volume Ekspor</div>
+            <div class="stat-sublabel">Ton ke pasar internasional</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="gallery-section">
+      <div class="gallery-header">
+        <p class="section-label">Galeri</p>
+        <h2
+          class="hero-title"
+          style="
+            font-family: &quot;Playfair Display&quot;, serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+          "
+        >
+          Potret Perikanan
+          <span style="color: var(--gold); font-style: italic">Sulut</span>
+        </h2>
+      </div>
+      <div class="slideshow-wrapper" style="padding: 0 2rem">
+        <div class="slideshow">
+          <div class="slide active">
+            <div
+              class="slide-placeholder"
+              style="background: linear-gradient(135deg, #0d2647, #0f7b6c)"
+            >
+              🎣
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="slide-caption">
+              <h3>Pelabuhan Manado</h3>
+              <p>Aktivitas pagi hari para nelayan di dermaga utama</p>
+            </div>
+          </div>
+          <div class="slide">
+            <div
+              class="slide-placeholder"
+              style="background: linear-gradient(135deg, #0a3d2e, #1a6b7a)"
+            >
+              🐟
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="slide-caption">
+              <h3>Hasil Tangkapan Segar</h3>
+              <p>Ikan tuna dan cakalang segar langsung dari laut Sulawesi</p>
+            </div>
+          </div>
+          <div class="slide">
+            <div
+              class="slide-placeholder"
+              style="background: linear-gradient(135deg, #1a2a4a, #2a5a3a)"
+            >
+              🌊
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="slide-caption">
+              <h3>Laut Sulawesi</h3>
+              <p>Perairan kaya dengan biodiversitas laut yang melimpah</p>
+            </div>
+          </div>
+          <div class="slide">
+            <div
+              class="slide-placeholder"
+              style="background: linear-gradient(135deg, #2a1a40, #0d4a6a)"
+            >
+              🦐
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="slide-caption">
+              <h3>Budidaya Udang</h3>
+              <p>Sentra budidaya udang windu ekspor kualitas premium</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-controls">
+          <button class="slide-btn" onclick="changeSlide(-1)">‹</button>
+          <div class="slide-dots">
+            <div class="dot active" onclick="goSlide(0)"></div>
+            <div class="dot" onclick="goSlide(1)"></div>
+            <div class="dot" onclick="goSlide(2)"></div>
+            <div class="dot" onclick="goSlide(3)"></div>
+          </div>
+          <button class="slide-btn" onclick="changeSlide(1)">›</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-logo">
+        <div class="logo-placeholder">SF</div>
+        <span class="footer-brand">Sulut Fishery</span>
+      </div>
+      <p class="footer-tagline">
+        Platform Lelang Ikan Digital · Sulawesi Utara
+      </p>
+      <div class="footer-divider"></div>
+      <p class="footer-credit">
+        © 2026 Sulut Fishery. <br />
+        Dikembangkan oleh <span>Kelompok 8</span>
+      </p>
+    </footer>
+
+    <script>
+      // Navbar scroll effect
+      window.addEventListener("scroll", () => {
+        document
+          .getElementById("navbar")
+          .classList.toggle("scrolled", window.scrollY > 60);
+      });
+
+      // Counter animation
+      function animateCounter(id, target, suffix = "") {
+        const el = document.getElementById(id);
+        let current = 0;
+        const step = target / 80;
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = Math.floor(current).toLocaleString("id") + suffix;
+          if (current >= target) clearInterval(timer);
+        }, 20);
+      }
+
+      const statsSection = document.querySelector(".stats-section");
+      let counted = false;
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !counted) {
+          counted = true;
+          animateCounter("cnt-users", 1248, "+");
+          animateCounter("cnt-catch", 3750);
+          animateCounter("cnt-export", 890);
+        }
+      });
+      observer.observe(statsSection);
+
+      // Slideshow
+      let current = 0;
+      const slides = document.querySelectorAll(".slide");
+      const dots = document.querySelectorAll(".dot");
+
+      function goSlide(n) {
+        slides[current].classList.remove("active");
+        dots[current].classList.remove("active");
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add("active");
+        dots[current].classList.add("active");
+      }
+      function changeSlide(dir) {
+        goSlide(current + dir);
+      }
+
+      // Auto-slide
+      setInterval(() => changeSlide(1), 4500);
+    </script>
+  </body>
+</html>

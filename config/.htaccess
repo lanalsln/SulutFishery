@@ -1,0 +1,13 @@
+# Prevent direct access to config files
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(php|sql|ini)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+<FilesMatch "\.(php|sql|ini)$">
+Deny from all
+</FilesMatch>
+</IfModule>

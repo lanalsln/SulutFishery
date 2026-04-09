@@ -1,0 +1,4 @@
+# Prevent direct access to log files
+<FilesMatch "\.(log)$">
+    Deny from all
+</FilesMatch>

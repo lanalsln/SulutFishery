@@ -1,0 +1,5 @@
+# Allow process files to be called (via AJAX or form submissions)
+
+# These are not directly accessible via URL - only called by application logic
+
+# Access control is handled in PHP files via config/csrf.php
